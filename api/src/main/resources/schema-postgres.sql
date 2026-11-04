@@ -34,3 +34,19 @@ ON CONFLICT (local_nome) DO UPDATE SET
     nome_exibicao     = EXCLUDED.nome_exibicao,
     piso              = EXCLUDED.piso,
     capacidade_maxima = EXCLUDED.capacidade_maxima;
+
+
+-- Valores de exemplo
+UPDATE status_atual_biblioteca AS s
+SET ocupacao_atual = v.ocupacao, atualizado_em = CURRENT_TIMESTAMP
+FROM (VALUES
+    ('PRINCIPAL',          135),
+    ('SALA_ESTUDOS_1',       9),
+    ('SALA_INFORMATICA_1',  17),
+    ('SALA_LEITURA_1',      31),
+    ('SALA_ESTUDOS_2',      27),
+    ('SALA_INFORMATICA_2',  24),
+    ('SALA_LEITURA_2',      14)
+) AS v(local, ocupacao)
+WHERE s.local_nome = v.local
+  AND NOT EXISTS (SELECT 1 FROM movimentacoes_log);
